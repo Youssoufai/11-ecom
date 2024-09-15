@@ -6,6 +6,11 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -24,7 +29,28 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 //
-            ]);
+                Group::make()->schema([
+                    Section::make('Product Information')->schema([
+                        TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        TextInput::make('slug')
+                            ->required()
+                            ->maxLength(255)
+                            ->disabled(),
+                        MarkdownEditor::make('description')
+                            ->columnSpanFull()
+                            ->fileAttachmentsDirectory('products')
+                    ])->columns(2),
+                    Section::make('Images')->schema([
+                        FileUpload::make('images')
+                            ->multiple()
+                            ->directory('products')
+                            ->maxFiles(5)
+                            ->reorderable()
+                    ])
+                ])->columnSpan(2)
+            ])->columns(5);
     }
 
     public static function table(Table $table): Table
