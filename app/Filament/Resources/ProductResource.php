@@ -10,6 +10,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -49,7 +50,27 @@ class ProductResource extends Resource
                             ->maxFiles(5)
                             ->reorderable()
                     ])
-                ])->columnSpan(2)
+                ])->columnSpan(2),
+                Group::make()->schema([
+                    Section::make('Price')->schema([
+                        TextInput::make('price')
+                            ->numeric()
+                            ->required()
+                            ->prefix('INR')
+                    ]),
+                    Section::make('Associations')->schema([
+                        Select::make('category_id')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->relationship('category', 'name'),
+                        Select::make('brand_id')
+                            ->required()
+                            ->searchable()
+                            ->preload()
+                            ->relationship('brand', 'name')
+                    ])
+                ])
             ])->columns(5);
     }
 
